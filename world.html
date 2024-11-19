@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persistent World</title>
+</head>
+<body>
+    <h1>Welcome to the Persistent World!</h1>
+    <p>In-game Time:</p>
+    <p id="game-time"></p>
+    <script>
+        async function fetchGameTime() {
+            const response = await fetch('http://localhost:3000/game-time');
+            const data = await response.json();
+            document.getElementById('game-time').innerText = `Month: ${data.month}, Year: ${data.year}`;
+        }
+
+        fetchGameTime();
+    </script>
+</body>
+</html>
