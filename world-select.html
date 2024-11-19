@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select World - Nation States</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="world-selection">
+        <div class="flex flex-col items-center p-8">
+            <h1 class="text-3xl font-bold mb-8">Select World</h1>
+            <div id="worlds-list" class="grid gap-4 w-full max-w-2xl">
+                <!-- Worlds will be loaded here dynamically -->
+            </div>
+            <div id="error-message" class="mt-4 p-3 bg-red-100 text-red-700 rounded hidden"></div>
+            <button id="join-button" class="mt-6 px-6 py-3 rounded-lg font-semibold bg-gray-300 text-gray-500 cursor-not-allowed" disabled>
+                Join World
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let selectedWorld = null;
+        const errorMessage = document.getElementById('error-message');
+        const joinButton = document.getElementById('join-button');
+        const worldsList = document.getElementById('worlds-list');
+
+        // Fetch and display worlds
+        async function fetchWorlds() {
+            try {
+                const response = await fetch('https://game-backend-9bdx.onrender.com/worlds');
+                const data = await response.json();
+                if (data.success) {
+                    displayWorlds(data.worlds);
+                }
+            } catch (error) {
+                showError('Failed to fetch worlds');
+            }
+        }
+
+        // Display worlds in the UI
+        function displayWorlds(worlds) {
+            worldsList.innerHTML = worlds.map(world => `
+                <div 
+                    class="p-4 border rounded-lg bg-white cursor-pointer hover:border-blue-300"
+                    data-world-id="${world.id}"
+                    onclick="selectWorld(${world.id}, this)"
+                >
+                    <h2 class="text-xl font-semibold">${world.name}</h2>
+                    <div class="mt-2 text-gray-600">
+                        Players: ${world.active_players} / ${world.max_players}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Handle world selection
+        function selectWorld(worldId, element) {
+            // Remove selection from all worlds
+            document.querySelectorAll('#worlds-list > div').forEach(div => {
+                div.classList.remove('border-blue-500', 'shadow-lg');
+                div.classList.add('border-gray-200');
+            });
+
+            // Add selection to clicked world
+            element.classList.remove('border-gray-200');
+            element.classList.add('border-blue-500', 'shadow-lg');
+            
+            selectedWorld = worldId;
+            joinButton.disabled = false;
+            joinButton.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+            joinButton.classList.add('bg-blue-500', 'text-white', 'hover:bg-blue-600');
+        }
+
+        // Join selected world
+        async function joinWorld() {
+            if (!selectedWorld) return;
+
+            try {
+                const userId = sessionStorage.getItem('userId');
+                const response = await fetch(`https://game-backend-9bdx.onrender.com/worlds/${selectedWorld}/join`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    window.location.href = 'game.html';
+                } else {
+                    showError(data.error);
+                }
+            } catch (error) {
+                showError('Failed to join world');
+            }
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+        // Add event listeners
+        joinButton.addEventListener('click', joinWorld);
+
+        // Load worlds when page loads
+        fetchWorlds();
+    </script>
+</body>
+</html>
