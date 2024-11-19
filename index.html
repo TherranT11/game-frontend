@@ -171,7 +171,7 @@
             
             if (data.success) {
                 sessionStorage.setItem('userId', data.userId);
-                window.location.href = 'world.html';
+                window.location.href = 'world-select.html';
             } else {
                 document.getElementById('login-error').textContent = data.error;
                 document.getElementById('login-error').style.display = 'block';
