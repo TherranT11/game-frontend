@@ -15,8 +15,8 @@
     <nav class="nav-container">
         <div class="nav-content">
             <div class="nav-links">
-                <a href="#" id="login-link">Login</a>
-                <a href="#" id="signup-link">Sign Up</a>
+                <a href="login.html" id="login-link">Login</a>
+                <a href="signup.html" id="signup-link">Sign Up</a>
                 <a href="about.html">About</a>
             </div>
         </div>
@@ -45,7 +45,23 @@
     </div>
 
     <script>
-        // Your existing JavaScript code
+        const loginLink = document.getElementById('login-link');
+        const signupLink = document.getElementById('signup-link');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+
+        loginLink.addEventListener('click', () => {
+            window.location.href = 'login.html';
+        });
+
+        signupLink.addEventListener('click', () => {
+            window.location.href = 'signup.html';
+        });
+
+        // Set login form as default view (this part remains the same)
+        window.onload = () => {
+            loginForm.style.display = 'block';
+        };
     </script>
 </body>
 </html>
