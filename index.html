@@ -7,49 +7,7 @@
     <title>Nation States - Home</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Navigation styles */
-        .nav-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background-color: #2c3e50;
-            padding: 1rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-
-        .nav-content {
-            display: flex;
-            justify-content: flex-end;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            background-color: #34495e;
-        }
-
-        /* Adjust main container for nav bar */
-        .container {
-            margin-top: 80px;
-            padding-top: 20px;
-        }
+        /* Any additional styles specific to index.html go here */
     </style>
 </head>
 <body>
@@ -87,27 +45,7 @@
     </div>
 
     <script>
-        const loginLink = document.getElementById('login-link');
-        const signupLink = document.getElementById('signup-link');
-        const loginForm = document.getElementById('login-form');
-        const signupForm = document.getElementById('signup-form');
-
-        loginLink.addEventListener('click', (event) => {
-            event.preventDefault(); // Prevent default link behavior
-            loginForm.style.display = 'block';
-            signupForm.style.display = 'none';
-        });
-
-        signupLink.addEventListener('click', (event) => {
-            event.preventDefault(); // Prevent default link behavior
-            loginForm.style.display = 'none';
-            signupForm.style.display = 'block';
-        });
-
-        // Set login form as default view
-        window.onload = () => {
-            loginForm.style.display = 'block';
-        };
+        // Your existing JavaScript code
     </script>
 </body>
 </html>
