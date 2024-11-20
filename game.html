@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Your Nation - Nation States</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-8">
+        <h1 class="text-3xl font-bold mb-8 text-center">Select Your Nation</h1>
+        
+        <div class="grid grid-cols-2 gap-8">
+            <!-- Left side: Nations List -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold mb-4">Available Nations</h2>
+                <div id="nations-list" class="space-y-4">
+                    <!-- Nations will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Right side: Selected Nation Info -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold mb-4">Nation Information</h2>
+                <div id="nation-info" class="space-y-4">
+                    <p class="text-gray-500">Select a nation to view its details</p>
+                </div>
+                <button id="join-nation" 
+                    class="mt-6 w-full py-3 bg-gray-300 text-gray-500 rounded-lg font-semibold disabled:cursor-not-allowed"
+                    disabled>
+                    Join Nation
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample nation data - this will come from your backend later
+        const nations = [
+            {
+                id: 1,
+                name: "Northern Kingdom",
+                population: 1000000,
+                resources: ["Wood", "Iron"],
+                military: 75,
+                economy: 60,
+                stability: 85
+            },
+            {
+                id: 2,
+                name: "Southern Empire",
+                population: 1500000,
+                resources: ["Gold", "Grain"],
+                military: 65,
+                economy: 80,
+                stability: 70
+            }
+        ];
+
+        let selectedNation = null;
+        const nationsList = document.getElementById('nations-list');
+        const nationInfo = document.getElementById('nation-info');
+        const joinButton = document.getElementById('join-nation');
+
+        // Display nations list
+        function displayNations() {
+            nationsList.innerHTML = nations.map(nation => `
+                <div class="nation-item p-4 border rounded cursor-pointer hover:border-blue-500"
+                     onclick="selectNation(${nation.id})">
+                    <h3 class="font-semibold">${nation.name}</h3>
+                    <p class="text-sm text-gray-600">Population: ${nation.population.toLocaleString()}</p>
+                </div>
+            `).join('');
+        }
+
+        // Handle nation selection
+        function selectNation(nationId) {
+            const nation = nations.find(n => n.id === nationId);
+            selectedNation = nation;
+            
+            // Update nation info display
+            nationInfo.innerHTML = `
+                <h3 class="text-2xl font-bold mb-4">${nation.name}</h3>
+                <div class="space-y-2">
+                    <p><strong>Population:</strong> ${nation.population.toLocaleString()}</p>
+                    <p><strong>Resources:</strong> ${nation.resources.join(", ")}</p>
+                    <div class="mt-4">
+                        <div class="mb-2">
+                            <label class="font-semibold">Military Strength</label>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${nation.military}%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="font-semibold">Economy</label>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-600 h-2.5 rounded-full" style="width: ${nation.economy}%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="font-semibold">Stability</label>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-yellow-600 h-2.5 rounded-full" style="width: ${nation.stability}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Enable join button
+            joinButton.disabled = false;
+            joinButton.classList.remove('bg-gray-300', 'text-gray-500');
+            joinButton.classList.add('bg-blue-500', 'text-white', 'hover:bg-blue-600');
+        }
+
+        // Handle join nation
+        joinButton.addEventListener('click', async () => {
+            if (!selectedNation) return;
+
+            try {
+                const userId = sessionStorage.getItem('userId');
+                const worldId = sessionStorage.getItem('worldId');
+                
+                // You'll implement this endpoint later
+                const response = await fetch('https://game-backend-9bdx.onrender.com/join-nation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId,
+                        worldId,
+                        nationId: selectedNation.id
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert(data.error || 'Failed to join nation');
+                }
+            } catch (error) {
+                console.error('Error joining nation:', error);
+                alert('Failed to join nation');
+            }
+        });
+
+        // Initialize
+        displayNations();
+    </script>
+</body>
+</html>
