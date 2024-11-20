@@ -112,3 +112,58 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select World - Nation States</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 8px 16px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <!-- Add Back Button -->
+    <button onclick="goBack()" class="back-button">← Back</button>
+
+    <div id="world-selection">
+        <div class="flex flex-col items-center p-8">
+            <h1 class="text-3xl font-bold mb-8">Select World</h1>
+            <div id="worlds-list" class="grid gap-4 w-full max-w-2xl">
+                <!-- Worlds will be loaded here dynamically -->
+            </div>
+            <div id="error-message" class="mt-4 p-3 bg-red-100 text-red-700 rounded hidden"></div>
+            <button id="join-button" class="mt-6 px-6 py-3 rounded-lg font-semibold bg-gray-300 text-gray-500 cursor-not-allowed" disabled>
+                Join World
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Add back button function
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        const BACKEND_URL = "https://game-backend-9bdx.onrender.com";
+        // ... rest of your existing script ...
+    </script>
+</body>
+</html>
