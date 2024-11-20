@@ -51,7 +51,7 @@
         const nations = [
             {
                 id: 1,
-                name: "Northern Kingdom",
+                name: "Republic of Sessau",
                 population: 1000000,
                 resources: ["Wood", "Iron"],
                 military: 75,
@@ -60,7 +60,7 @@
             },
             {
                 id: 2,
-                name: "Southern Empire",
+                name: "Melizean Military Junta",
                 population: 1500000,
                 resources: ["Gold", "Grain"],
                 military: 65,
@@ -169,7 +169,7 @@
                     alert(data.error || 'Failed to join nation');
                 }
             } catch (error) {
-                console.error('Error joining nation:', error);
+                console.error('Error joining nation:', errorno);
                 alert('Failed to join nation');
             }
         });
