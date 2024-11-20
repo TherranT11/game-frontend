@@ -97,28 +97,31 @@
         }
 
         async function joinWorld() {
-            if (!selectedWorld) return;
+    if (!selectedWorld) return;
 
-            try {
-                const userId = sessionStorage.getItem('userId');
-                const response = await fetch(`https://game-backend-9bdx.onrender.com/worlds/${selectedWorld}/join`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ userId })
-                });
-                
-                const data = await response.json();
-                if (data.success) {
-                    window.location.href = 'game.html';
-                } else {
-                    showError(data.error);
-                }
-            } catch (error) {
-                showError('Failed to join world');
-            }
+    try {
+        const userId = sessionStorage.getItem('userId');
+        const response = await fetch(`https://game-backend-9bdx.onrender.com/worlds/${selectedWorld}/join`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            // Store world info before redirecting
+            sessionStorage.setItem('worldId', selectedWorld);
+            sessionStorage.setItem('worldName', 'Genesis'); // Store world name
+            window.location.href = 'game.html';  // This will now go to nation selection
+        } else {
+            showError(data.error);
         }
+    } catch (error) {
+        showError('Failed to join world');
+    }
+}
 
         function showError(message) {
             errorMessage.textContent = message;

@@ -9,8 +9,19 @@
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto p-8">
+        <!-- Add World Info -->
+        <div class="text-center mb-4">
+            <span class="text-gray-600">World:</span>
+            <span id="world-name" class="font-semibold"></span>
+        </div>
+
         <h1 class="text-3xl font-bold mb-8 text-center">Select Your Nation</h1>
         
+        <!-- Back Button -->
+        <button onclick="goBack()" class="mb-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+            ← Back to World Selection
+        </button>
+
         <div class="grid grid-cols-2 gap-8">
             <!-- Left side: Nations List -->
             <div class="bg-white p-6 rounded-lg shadow-lg">
@@ -36,7 +47,7 @@
     </div>
 
     <script>
-        // Sample nation data - this will come from your backend later
+        // Sample nation data - replace with API call later
         const nations = [
             {
                 id: 1,
@@ -62,6 +73,22 @@
         const nationsList = document.getElementById('nations-list');
         const nationInfo = document.getElementById('nation-info');
         const joinButton = document.getElementById('join-nation');
+
+        // Check if user came from world selection
+        function checkWorldAccess() {
+            const worldId = sessionStorage.getItem('worldId');
+            const worldName = sessionStorage.getItem('worldName');
+            
+            if (!worldId || !worldName) {
+                window.location.href = 'world-select.html';
+                return;
+            }
+            document.getElementById('world-name').textContent = worldName;
+        }
+
+        function goBack() {
+            window.location.href = 'world-select.html';
+        }
 
         // Display nations list
         function displayNations() {
@@ -148,7 +175,10 @@
         });
 
         // Initialize
-        displayNations();
+        window.onload = function() {
+            checkWorldAccess();
+            displayNations();
+        };
     </script>
 </body>
 </html>
