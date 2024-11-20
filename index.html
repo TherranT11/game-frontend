@@ -16,8 +16,8 @@
     <nav class="nav-container">
         <div class="nav-content">
             <div class="nav-links">
-                <a href="#" onclick="showLoginForm(); return false;">Login</a>
-                <a href="#" onclick="showSignupForm(); return false;">Sign Up</a>
+                <a href="login.html" id="login-link">Login</a>
+                <a href="signup.html" id="signup-link">Sign Up</a>
                 <a href="about.html">About</a>
             </div>
         </div>
@@ -27,7 +27,7 @@
         <h1>Nation States</h1>
 
         <!-- Login Form -->
-        <div id="login-form" class="form-container">
+        <div id="login-form" class="form-container" style="display: none;">
             <h2>Login</h2>
             <form id="login">
                 <!-- Your existing login form content -->
@@ -46,26 +46,25 @@
     </div>
 
     <script>
-        function showLoginForm() {
-            document.getElementById('login-form').style.display = 'block';
-            document.getElementById('signup-form').style.display = 'none';
-            return false; // Prevents default anchor behavior
-        }
+        const loginLink = document.getElementById('login-link');
+        const signupLink = document.getElementById('signup-link');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
 
-        function showSignupForm() {
-            document.getElementById('login-form').style.display = 'none';
-            document.getElementById('signup-form').style.display = 'block';
-            return false; // Prevents default anchor behavior
-        }
+        loginLink.addEventListener('click', () => {
+            loginForm.style.display = 'block';
+            signupForm.style.display = 'none';
+        });
+
+        signupLink.addEventListener('click', () => {
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+        });
 
         // Set login form as default view
-        window.onload = function() {
-            showLoginForm();
+        window.onload = () => {
+            loginForm.style.display = 'block';
         };
-
-        // Remove the old button-related code since we're using nav links now
-        document.getElementById('signup').addEventListener('submit', handleSignup);
-        document.getElementById('login').addEventListener('submit', handleLogin);
     </script>
 </body>
 </html>
