@@ -16,8 +16,8 @@
     <nav class="nav-container">
         <div class="nav-content">
             <div class="nav-links">
-                <a href="login.html" id="login-link">Login</a>
-                <a href="signup.html" id="signup-link">Sign Up</a>
+                <a href="#" id="login-link">Login</a>
+                <a href="#" id="signup-link">Sign Up</a>
                 <a href="about.html">About</a>
             </div>
         </div>
@@ -51,12 +51,14 @@
         const loginForm = document.getElementById('login-form');
         const signupForm = document.getElementById('signup-form');
 
-        loginLink.addEventListener('click', () => {
+        loginLink.addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default link behavior
             loginForm.style.display = 'block';
             signupForm.style.display = 'none';
         });
 
-        signupLink.addEventListener('click', () => {
+        signupLink.addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent default link behavior
             loginForm.style.display = 'none';
             signupForm.style.display = 'block';
         });
