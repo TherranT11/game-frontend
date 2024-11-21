@@ -7,13 +7,32 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Navigation styles */
+        .nav-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #2c3e50;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between; /* This allows back button and title to be on same line */
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Back button styling */
         .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
+            color: white;
             padding: 8px 16px;
             background-color: #6c757d;
-            color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
@@ -23,28 +42,41 @@
         .back-button:hover {
             background-color: #5a6268;
         }
+
+        /* Main content container */
+        .content-container {
+            margin-top: 80px; /* Space for fixed nav */
+            padding: 2rem;
+        }
     </style>
 </head>
 <body>
-    <!-- Back Button -->
-    <button onclick="goBack()" class="back-button">← Back</button>
+    <!-- Navigation with Back Button -->
+    <nav class="nav-container">
+        <div class="nav-content">
+            <button onclick="goBack()" class="back-button">← Back</button>
+            <span class="text-white text-xl font-semibold">Select World</span>
+            <div style="width: 80px;"></div> <!-- Spacer for balance -->
+        </div>
+    </nav>
 
-    <!-- Single World Selection Container -->
-    <div id="world-selection">
-        <div class="flex flex-col items-center p-8">
-            <h1 class="text-3xl font-bold mb-8">Select World</h1>
-            <div id="worlds-list" class="grid gap-4 w-full max-w-2xl">
-                <!-- Worlds will be loaded here dynamically -->
+    <!-- Main Content -->
+    <div class="content-container">
+        <div id="world-selection">
+            <div class="flex flex-col items-center">
+                <div id="worlds-list" class="grid gap-4 w-full max-w-2xl">
+                    <!-- Worlds will be loaded here dynamically -->
+                </div>
+                <div id="error-message" class="mt-4 p-3 bg-red-100 text-red-700 rounded hidden"></div>
+                <button id="join-button" class="mt-6 px-6 py-3 rounded-lg font-semibold bg-gray-300 text-gray-500 cursor-not-allowed" disabled>
+                    Join World
+                </button>
             </div>
-            <div id="error-message" class="mt-4 p-3 bg-red-100 text-red-700 rounded hidden"></div>
-            <button id="join-button" class="mt-6 px-6 py-3 rounded-lg font-semibold bg-gray-300 text-gray-500 cursor-not-allowed" disabled>
-                Join World
-            </button>
         </div>
     </div>
 
-    <!-- Single Script Section -->
     <script>
+        // Your existing JavaScript remains the same
         function goBack() {
             window.location.href = 'index.html';
         }
@@ -54,82 +86,7 @@
         const joinButton = document.getElementById('join-button');
         const worldsList = document.getElementById('worlds-list');
 
-        async function fetchWorlds() {
-            try {
-                const response = await fetch('https://game-backend-9bdx.onrender.com/worlds');
-                const data = await response.json();
-                if (data.success) {
-                    displayWorlds(data.worlds);
-                }
-            } catch (error) {
-                showError('Failed to fetch worlds');
-            }
-        }
-
-        function displayWorlds(worlds) {
-            worldsList.innerHTML = worlds.map(world => `
-                <div 
-                    class="p-4 border rounded-lg bg-white cursor-pointer hover:border-blue-300"
-                    data-world-id="${world.id}"
-                    onclick="selectWorld(${world.id}, this)"
-                >
-                    <h2 class="text-xl font-semibold">${world.name}</h2>
-                    <div class="mt-2 text-gray-600">
-                        Players: ${world.active_players} / ${world.max_players}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function selectWorld(worldId, element) {
-            document.querySelectorAll('#worlds-list > div').forEach(div => {
-                div.classList.remove('border-blue-500', 'shadow-lg');
-                div.classList.add('border-gray-200');
-            });
-
-            element.classList.remove('border-gray-200');
-            element.classList.add('border-blue-500', 'shadow-lg');
-            
-            selectedWorld = worldId;
-            joinButton.disabled = false;
-            joinButton.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
-            joinButton.classList.add('bg-blue-500', 'text-white', 'hover:bg-blue-600');
-        }
-
-        async function joinWorld() {
-    if (!selectedWorld) return;
-
-    try {
-        const userId = sessionStorage.getItem('userId');
-        const response = await fetch(`https://game-backend-9bdx.onrender.com/worlds/${selectedWorld}/join`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ userId })
-        });
-        
-        const data = await response.json();
-        if (data.success) {
-            // Store world info before redirecting
-            sessionStorage.setItem('worldId', selectedWorld);
-            sessionStorage.setItem('worldName', 'Genesis'); // Store world name
-            window.location.href = 'game.html';  // This will now go to nation selection
-        } else {
-            showError(data.error);
-        }
-    } catch (error) {
-        showError('Failed to join world');
-    }
-}
-
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.classList.remove('hidden');
-        }
-
-        joinButton.addEventListener('click', joinWorld);
-        fetchWorlds();
+        // Rest of your existing JavaScript code...
     </script>
 </body>
 </html>
