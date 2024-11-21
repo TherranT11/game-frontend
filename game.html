@@ -144,45 +144,11 @@ const nations = [
                 </div>
             `;
 
-            // Enable join button
-            joinButton.disabled = false;
-            joinButton.classList.remove('bg-gray-300', 'text-gray-500');
-            joinButton.classList.add('bg-blue-500', 'text-white', 'hover:bg-blue-600');
-        }
-
-        // Handle join nation
-        joinButton.addEventListener('click', async () => {
-            if (!selectedNation) return;
-
-            try {
-                const userId = sessionStorage.getItem('userId');
-                const worldId = sessionStorage.getItem('worldId');
-                
-                // You'll implement this endpoint later
-                const response = await fetch('https://game-backend-9bdx.onrender.com/join-nation', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        userId,
-                        worldId,
-                        nationId: selectedNation.id
-                    })
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    window.location.href = 'dashboard.html';
-                } else {
-                    alert(data.error || 'Failed to join nation');
-                }
-            } catch (error) {
-                console.error('Error joining nation:', errorno);
-                alert('Failed to join nation');
-            }
-        });
-
+    // Enable join button
+    joinButton.disabled = false;
+    joinButton.classList.remove('bg-gray-300', 'text-gray-500');
+    joinButton.classList.add('bg-blue-500', 'text-white', 'hover:bg-blue-600');
+}
         // Initialize
         window.onload = function() {
             checkWorldAccess();
