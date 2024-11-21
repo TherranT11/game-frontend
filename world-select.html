@@ -52,6 +52,15 @@
             margin-bottom: 2rem;
             color: #2c3e50;
         }
+
+        .error-message {
+            background-color: #fee2e2;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -79,6 +88,16 @@
     </div>
 
     <script>
+        // Check if user is logged in
+        window.onload = function() {
+            const userId = sessionStorage.getItem('userId');
+            if (!userId) {
+                window.location.href = 'index.html';
+                return;
+            }
+            fetchWorlds();
+        };
+
         function goBack() {
             window.location.href = 'index.html';
         }
@@ -94,9 +113,12 @@
                 const data = await response.json();
                 if (data.success) {
                     displayWorlds(data.worlds);
+                } else {
+                    showError('Failed to fetch worlds: ' + (data.error || 'Unknown error'));
                 }
             } catch (error) {
-                showError('Failed to fetch worlds');
+                console.error('Error fetching worlds:', error);
+                showError('Failed to fetch worlds: ' + error.message);
             }
         }
 
@@ -135,35 +157,48 @@
 
             try {
                 const userId = sessionStorage.getItem('userId');
+                console.log('Attempting to join world:', { userId, selectedWorld });
+
+                if (!userId) {
+                    showError('Not logged in. Please log in again.');
+                    setTimeout(() => window.location.href = 'index.html', 2000);
+                    return;
+                }
+
                 const response = await fetch(`https://game-backend-9bdx.onrender.com/worlds/${selectedWorld}/join`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ userId })
+                    body: JSON.stringify({ 
+                        userId: parseInt(userId) // Convert to number
+                    })
                 });
                 
                 const data = await response.json();
+                console.log('Join response:', data);
+
                 if (data.success) {
                     sessionStorage.setItem('worldId', selectedWorld);
                     sessionStorage.setItem('worldName', 'Genesis');
                     window.location.href = 'game.html';
                 } else {
-                    showError(data.error);
+                    showError(data.error || 'Failed to join world');
                 }
             } catch (error) {
-                showError('Failed to join world');
+                console.error('Join world error:', error);
+                showError('Failed to join world: ' + error.message);
             }
         }
 
         function showError(message) {
             errorMessage.textContent = message;
             errorMessage.classList.remove('hidden');
+            console.error('Error:', message);
         }
 
-        // Add event listener and fetch worlds
+        // Add event listener for join button
         joinButton.addEventListener('click', joinWorld);
-        fetchWorlds();
     </script>
 </body>
 </html>
