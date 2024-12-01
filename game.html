@@ -47,36 +47,24 @@
     </div>
 
     <script>
-// Sample nation data - replace with API call later
-const nations = [
-    {
-        id: 1,
-        name: "Republic of Sessau",
-        population: 1000000,
-        resources: ["Wood", "Iron"],
-        military: 75,
-        economy: 60,
-        stability: 85
-    },
-    {
-        id: 2,
-        name: "Melizean Military Junta",
-        population: 1500000,
-        resources: ["Gold", "Grain"],
-        military: 65,
-        economy: 80,
-        stability: 70
-    },
-    {
-        id: 3,
-        name: "Eastern Principality",
-        population: 800000,
-        resources: ["Silk", "Spices"],
-        military: 70,
-        economy: 85,
-        stability: 65
+        async function fetchNations() {
+    try {
+        const response = await fetch(`${API_URL}/worlds/${worldId}/nations`);
+        const data = await response.json();
+        if (data.success) {
+            nations = data.nations;
+            displayNations();
+        } else {
+            alert('Failed to load nations');
+        }
+    } catch (error) {
+        console.error('Error fetching nations:', error);
+        alert('An error occurred while loading nations.');
     }
-];
+}
+        const API_URL = 'https://game-backend-9bdx.onrender.com';
+// Sample nation data - replace with API call later
+let nations = [];
 
         let selectedNation = null;
         const nationsList = document.getElementById('nations-list');
@@ -101,48 +89,64 @@ const nations = [
 
         // Display nations list
         function displayNations() {
-            nationsList.innerHTML = nations.map(nation => `
-                <div class="nation-item p-4 border rounded cursor-pointer hover:border-blue-500"
-                     onclick="selectNation(${nation.id})">
-                    <h3 class="font-semibold">${nation.name}</h3>
-                    <p class="text-sm text-gray-600">Population: ${nation.population.toLocaleString()}</p>
-                </div>
-            `).join('');
-        }
+    nationsList.innerHTML = nations.map(nation => `
+        <div class="nation-item p-4 border rounded cursor-pointer hover:border-blue-500"
+             onclick="selectNation(${nation.id})">
+            <h3 class="font-semibold">${nation.name}</h3>
+            <p class="text-sm text-gray-600">Population: ${nation.population.toLocaleString()}</p>
+        </div>
+    `).join('');
+}
 
-        // Handle nation selection
-        function selectNation(nationId) {
-            const nation = nations.find(n => n.id === nationId);
-            selectedNation = nation;
-            
-            // Update nation info display
-            nationInfo.innerHTML = `
-                <h3 class="text-2xl font-bold mb-4">${nation.name}</h3>
-                <div class="space-y-2">
-                    <p><strong>Population:</strong> ${nation.population.toLocaleString()}</p>
-                    <p><strong>Resources:</strong> ${nation.resources.join(", ")}</p>
-                    <div class="mt-4">
-                        <div class="mb-2">
-                            <label class="font-semibold">Military Strength</label>
-                            <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${nation.military}%"></div>
-                            </div>
-                        </div>
-                        <div class="mb-2">
-                            <label class="font-semibold">Economy</label>
-                            <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                <div class="bg-green-600 h-2.5 rounded-full" style="width: ${nation.economy}%"></div>
-                            </div>
-                        </div>
-                        <div class="mb-2">
-                            <label class="font-semibold">Stability</label>
-                            <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                <div class="bg-yellow-600 h-2.5 rounded-full" style="width: ${nation.stability}%"></div>
-                            </div>
-                        </div>
+// Handle nation selection
+function selectNation(nationId) {
+    const nation = nations.find(n => n.id === nationId);
+    selectedNation = nation;
+    
+    // Parse resources if necessary
+    let resources = [];
+    if (Array.isArray(nation.resources)) {
+        resources = nation.resources;
+    } else if (typeof nation.resources === 'string') {
+        try {
+            resources = JSON.parse(nation.resources);
+        } catch (e) {
+            console.error('Error parsing resources:', e);
+            resources = [];
+        }
+    }
+
+    // Update nation info display
+    nationInfo.innerHTML = `
+        <h3 class="text-2xl font-bold mb-4">${nation.name}</h3>
+        <div class="space-y-2">
+            <p><strong>Population:</strong> ${nation.population.toLocaleString()}</p>
+            <p><strong>Resources:</strong> ${resources.join(", ")}</p>
+            <div class="mt-4">
+                <!-- Military Strength -->
+                <div class="mb-2">
+                    <label class="font-semibold">Military Strength</label>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${nation.military}%"></div>
                     </div>
                 </div>
-            `;
+                <!-- Economy -->
+                <div class="mb-2">
+                    <label class="font-semibold">Economy</label>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-green-600 h-2.5 rounded-full" style="width: ${nation.economy}%"></div>
+                    </div>
+                </div>
+                <!-- Stability -->
+                <div class="mb-2">
+                    <label class="font-semibold">Stability</label>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-yellow-600 h-2.5 rounded-full" style="width: ${nation.stability}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
 
     // Enable join button
     joinButton.disabled = false;
@@ -152,7 +156,7 @@ const nations = [
         // Initialize
         window.onload = function() {
             checkWorldAccess();
-            displayNations();
+            fetchNations();
         };
     </script>
 </body>
